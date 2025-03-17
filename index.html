@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موزه دیجیتال</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.8; /* خواناتر شدن متن */
+            color: #fff;
+            background: linear-gradient(135deg, #2D3048, #FFD700, #1E3A8A, #FFD700, #2D3048);
+            background-size: 300% 300%;
+            animation: backgroundShift 20s ease-in-out infinite;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: relative;
+            margin: 0 auto;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.imgur.com/placeholder.jpg') no-repeat center center fixed;
+            background-size: cover;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 2px, transparent 2px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+            animation: glowingParticles 18s linear infinite;
+            will-change: transform, opacity;
+            z-index: 1;
+        }
+        @keyframes backgroundShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes glowingParticles {
+            0% { transform: translate(0, 0); opacity: 0.3; }
+            50% { opacity: 0.5; }
+            100% { transform: translate(-20px, -20px); opacity: 0.3; }
+        }
+        body > div.overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 20, 40, 0.7);
+            z-index: 2;
+        }
+        header, .container, .modal {
+            position: relative;
+            z-index: 3;
+        }
+        header {
+            background: none;
+            color: #fff;
+            text-align: center;
+            padding: 2vh 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            border-bottom: 4px solid rgba(255, 215, 0, 0.8);
+            height: 10vh;
+        }
+        header h1 {
+            font-size: 48px; /* بزرگ‌تر شدن عنوان هدر */
+            font-weight: 800; /* سنگین‌تر برای خوانایی */
+            background: linear-gradient(135deg, #FFFFFF, #E5E7EB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px; /* فاصله‌گذاری کمتر برای خوانایی */
+        }
+        header p {
+            font-size: 20px; /* بزرگ‌تر شدن متن هدر */
+            font-weight: 400;
+            background: linear-gradient(135deg, #FFFFFF, #E5E7EB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            margin-top: 6px;
+        }
+        .container {
+            display: grid;
+            grid-template-rows: repeat(2, calc(50% - 1vh));
+            grid-template-columns: repeat(4, 25%);
+            width: 100%;
+            height: 90vh;
+            margin: 0 auto;
+            padding: 4vh 0;
+            gap: 2vh 0;
+        }
+        .box {
+            background: rgba(40, 25, 50, 0.85);
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(8px);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid rgba(0, 102, 204, 0.6);
+            height: 100%;
+        }
+        .box img {
+            width: 100%;
+            height: 62%;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            filter: brightness(0.9);
+        }
+        .box-content {
+            padding: 2%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 38%;
+        }
+        .box-content h3 {
+            font-size: 28px; /* بزرگ‌تر شدن عنوان باکس */
+            font-weight: 800; /* سنگین‌تر برای خوانایی */
+            background: linear-gradient(135deg, #FFD700, #0066CC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
+            letter-spacing: 0.5px;
+        }
+        .box-content p {
+            font-size: 18px; /* بزرگ‌تر شدن متن باکس */
+            font-weight: 400;
+            color: #E0E7FF;
+            line-height: 1.5; /* خواناتر شدن */
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+        }
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            font-size: 40px;
+            color: #fff;
+            background: linear-gradient(135deg, #FFD700, #0066CC);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2vh;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #4A4068, #2D3048);
+            padding: 20px;
+            border-radius: 15px;
+            width: 90vw;
+            max-height: 90vh;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 102, 204, 0.5);
+            position: relative;
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            text-align: center;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            font-size: 36px; /* بزرگ‌تر شدن عنوان مودال */
+            font-weight: 800; /* سنگین‌تر برای خوانایی */
+            background: linear-gradient(135deg, #FFD700, #0066CC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        .modal-content p {
+            font-size: 20px; /* بزرگ‌تر شدن متن مودال */
+            font-weight: 400;
+            color: #E0E7FF;
+            margin-bottom: 20px;
+            line-height: 1.6; /* خواناتر شدن */
+        }
+        .close-top {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 28px;
+            color: #fff;
+            background: linear-gradient(135deg, #0066CC, #FFD700);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .close-bottom {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: linear-gradient(135deg, #0066CC, #FFD700);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px; /* بزرگ‌تر شدن فونت دکمه */
+            font-weight: 700;
+        }
+        .custom-player {
+            background: rgba(40, 25, 50, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            margin: 15px 0;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(0, 102, 204, 0.7);
+            max-height: 60vh;
+        }
+        .player-cover img {
+            width: 100%;
+            max-width: 220px;
+            border-radius: 15px;
+            margin: 0 auto 15px;
+            display: block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .control-btn {
+            background: linear-gradient(135deg, #0066CC, #FFD700);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .progress-bar {
+            flex-grow: 1;
+            height: 8px;
+            background: rgba(0, 102, 204, 0.4);
+            border-radius: 5px;
+            margin: 0 15px;
+            position: relative;
+            cursor: pointer;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .progress {
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, #FFD700, #0066CC);
+            border-radius: 5px;
+        }
+        .time {
+            font-size: 14px; /* بزرگ‌تر شدن زمان */
+            font-weight: 400;
+            color: #E0E7FF;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+        }
+        .visualizer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <header>
+        <h1>آوا و نغمه‌ها</h1>
+    </header>
+    <div class="container">
+        <!-- ردیف اول -->
+        <div class="box" onclick="openModal('modal1')">
+            <img src="111.jpg" alt="Box 1" loading="lazy">
+            <i class="bi bi-play-circle-fill play-icon"></i>
+            <div class="box-content">
+                <h3>علی زند وکیلی</h3>
+                <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            </div>
+        </div>
+        <div class="box" onclick="openModal('modal2')">
+            <img src="111.jpg" alt="Box 2" loading="lazy">
+            <i class="bi bi-play-circle-fill play-icon"></i>
+            <div class="box-content">
+                <h3>علی زند وکیلی</h3>
+                <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            </div>
+        </div>
+        <div class="box" onclick="openModal('modal3')">
+            <img src="111.jpg" alt="Box 3" loading="lazy">
+            <i class="bi bi-play-circle-fill play-icon"></i>
+            <div class="box-content">
+                <h3>علی زند وکیلی</h3>
+                <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            </div>
+        </div>
+        <div class="box" onclick="openModal('modal4')">
+            <img src="111.jpg" alt="Box 4" loading="lazy">
+            <i class="bi bi-play-circle-fill play-icon"></i>
+            <div class="box-content">
+                <h3>علی زند وکیلی</h3>
+                <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            </div>
+        </div>
+        <!-- ردیف دوم -->
+        <div class="box" onclick="openModal('modal5')">
+            <img src="111.jpg" alt="Box 5" loading="lazy">
+            <i class="bi bi-play-circle-fill play-icon"></i>
+            <div class="box-content">
+                <h3>علی زند وکیلی</h3>
+                <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            </div>
+        </div>
+        <div class="box" onclick="openModal('modal6')">
+            <img src="111.jpg" alt="Box 6" loading="lazy">
+            <i class="bi bi-play-circle-fill play-icon"></i>
+            <div class="box-content">
+                <h3>علی زند وکیلی</h3>
+                <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            </div>
+        </div>
+        <div class="box" onclick="openModal('modal7')">
+            <img src="111.jpg" alt="Box 7" loading="lazy">
+            <i class="bi bi-play-circle-fill play-icon"></i>
+            <div class="box-content">
+                <h3>علی زند وکیلی</h3>
+                <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            </div>
+        </div>
+        <div class="box" onclick="openModal('modal8')">
+            <img src="111.jpg" alt="Box 8" loading="lazy">
+            <i class="bi bi-play-circle-fill play-icon"></i>
+            <div class="box-content">
+                <h3>علی زند وکیلی</h3>
+                <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            </div>
+        </div>
+    </div>
+    <!-- مودال‌ها -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <span class="close-top" onclick="closeModal('modal1')">×</span>
+            <h2>علی زند وکیلی</h2>
+            <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            <div class="custom-player">
+                <canvas class="visualizer"></canvas>
+                <div class="player-cover">
+                    <img src="111.jpg" alt="Cover" loading="lazy">
+                </div>
+                <div class="player-controls">
+                    <button class="control-btn" onclick="playPause(this)"><i class="bi bi-play-fill"></i></button>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <span class="time">00:00 / 03:30</span>
+                    <button class="control-btn"><i class="bi bi-volume-up-fill"></i></button>
+                    <button class="control-btn" onclick="toggleFullscreen(this)"><i class="bi bi-fullscreen"></i></button>
+                </div>
+                <audio id="audio1" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="metadata"></audio>
+            </div>
+            <button class="close-bottom" onclick="closeModal('modal1')">بستن</button>
+        </div>
+    </div>
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <span class="close-top" onclick="closeModal('modal2')">×</span>
+            <h2>علی زند وکیلی</h2>
+            <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            <div class="custom-player">
+                <div id="72715367986">
+                    <script type="text/JavaScript" src="https://www.aparat.com/embed/r88287x?data[rnddiv]=72715367986&data[responsive]=yes"></script>
+                </div>
+            </div>
+            <button class="close-bottom" onclick="closeModal('modal2')">بستن</button>
+        </div>
+    </div>
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <span class="close-top" onclick="closeModal('modal3')">×</span>
+            <h2>علی زند وکیلی</h2>
+            <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            <div class="custom-player">
+                <canvas class="visualizer"></canvas>
+                <div class="player-cover">
+                    <img src="111.jpg" alt="Cover" loading="lazy">
+                </div>
+                <div class="player-controls">
+                    <button class="control-btn" onclick="playPause(this)"><i class="bi bi-play-fill"></i></button>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <span class="time">00:00 / 03:30</span>
+                    <button class="control-btn"><i class="bi bi-volume-up-fill"></i></button>
+                    <button class="control-btn" onclick="toggleFullscreen(this)"><i class="bi bi-fullscreen"></i></button>
+                </div>
+                <audio id="audio3" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="metadata"></audio>
+            </div>
+            <button class="close-bottom" onclick="closeModal('modal3')">بستن</button>
+        </div>
+    </div>
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close-top" onclick="closeModal('modal4')">×</span>
+            <h2>علی زند وکیلی</h2>
+            <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            <div class="custom-player">
+                <div id="72715367986">
+                    <script type="text/JavaScript" src="https://www.aparat.com/embed/r88287x?data[rnddiv]=72715367986&data[responsive]=yes"></script>
+                </div>
+            </div>
+            <button class="close-bottom" onclick="closeModal('modal4')">بستن</button>
+        </div>
+    </div>
+    <div id="modal5" class="modal">
+        <div class="modal-content">
+            <span class="close-top" onclick="closeModal('modal5')">×</span>
+            <h2>علی زند وکیلی</h2>
+            <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            <div class="custom-player">
+                <canvas class="visualizer"></canvas>
+                <div class="player-cover">
+                    <img src="111.jpg" alt="Cover" loading="lazy">
+                </div>
+                <div class="player-controls">
+                    <button class="control-btn" onclick="playPause(this)"><i class="bi bi-play-fill"></i></button>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <span class="time">00:00 / 03:30</span>
+                    <button class="control-btn"><i class="bi bi-volume-up-fill"></i></button>
+                    <button class="control-btn" onclick="toggleFullscreen(this)"><i class="bi bi-fullscreen"></i></button>
+                </div>
+                <audio id="audio5" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="metadata"></audio>
+            </div>
+            <button class="close-bottom" onclick="closeModal('modal5')">بستن</button>
+        </div>
+    </div>
+    <div id="modal6" class="modal">
+        <div class="modal-content">
+            <span class="close-top" onclick="closeModal('modal6')">×</span>
+            <h2>علی زند وکیلی</h2>
+            <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            <div class="custom-player">
+                <div id="72715367986">
+                    <script type="text/JavaScript" src="https://www.aparat.com/embed/r88287x?data[rnddiv]=72715367986&data[responsive]=yes"></script>
+                </div>
+            </div>
+            <button class="close-bottom" onclick="closeModal('modal6')">بستن</button>
+        </div>
+    </div>
+    <div id="modal7" class="modal">
+        <div class="modal-content">
+            <span class="close-top" onclick="closeModal('modal7')">×</span>
+            <h2>علی زند وکیلی</h2>
+            <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            <div class="custom-player">
+                <canvas class="visualizer"></canvas>
+                <div class="player-cover">
+                    <img src="111.jpg" alt="Cover" loading="lazy">
+                </div>
+                <div class="player-controls">
+                    <button class="control-btn" onclick="playPause(this)"><i class="bi bi-play-fill"></i></button>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <span class="time">00:00 / 03:30</span>
+                    <button class="control-btn"><i class="bi bi-volume-up-fill"></i></button>
+                    <button class="control-btn" onclick="toggleFullscreen(this)"><i class="bi bi-fullscreen"></i></button>
+                </div>
+                <audio id="audio7" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="metadata"></audio>
+            </div>
+            <button class="close-bottom" onclick="closeModal('modal7')">بستن</button>
+        </div>
+    </div>
+    <div id="modal8" class="modal">
+        <div class="modal-content">
+            <span class="close-top" onclick="closeModal('modal8')">×</span>
+            <h2>علی زند وکیلی</h2>
+            <p>علی زند وکیلی متولد ۲۵ بهمن ۱۳۶۵ در شیراز، خواننده، آهنگساز و نوازنده ایرانی است.</p>
+            <div class="custom-player">
+                <div id="72715367986">
+                    <script type="text/JavaScript" src="https://www.aparat.com/embed/r88287x?data[rnddiv]=72715367986&data[responsive]=yes"></script>
+                </div>
+            </div>
+            <button class="close-bottom" onclick="closeModal('modal8')">بستن</button>
+        </div>
+    </div>
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            const player = document.getElementById(modalId).querySelector('audio');
+            if (player) setupVisualizer(modalId);
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            const player = document.getElementById(modalId).querySelector('audio');
+            if (player) player.pause();
+        }
+        function playPause(btn) {
+            const player = btn.closest('.custom-player').querySelector('audio');
+            if (!player) return;
+            const icon = btn.querySelector('i');
+            document.querySelectorAll('audio').forEach(p => {
+                if (p !== player) p.pause();
+            });
+            if (player.paused) {
+                player.play();
+                icon.classList.replace('bi-play-fill', 'bi-pause-fill');
+            } else {
+                player.pause();
+                icon.classList.replace('bi-pause-fill', 'bi-play-fill');
+            }
+            player.ontimeupdate = debounce(() => {
+                const progress = btn.closest('.custom-player').querySelector('.progress');
+                const time = btn.closest('.custom-player').querySelector('.time');
+                const percentage = (player.currentTime / player.duration) * 100;
+                progress.style.width = `${percentage}%`;
+                time.textContent = `${formatTime(player.currentTime)} / ${formatTime(player.duration)}`;
+            }, 100);
+        }
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min < 10 ? '0' + min : min}:${sec < 10 ? '0' + sec : sec}`;
+        }
+        function toggleFullscreen(btn) {
+            const modal = btn.closest('.modal');
+            if (!document.fullscreenElement) {
+                modal.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        function setupVisualizer(modalId) {
+            const audio = document.getElementById(modalId).querySelector('audio');
+            if (!audio) return;
+            const canvas = document.getElementById(modalId).querySelector('.visualizer');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            const context = new AudioContext();
+            const analyser = context.createAnalyser();
+            const source = context.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(context.destination);
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            function visualize() {
+                analyser.getByteFrequencyData(dataArray);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const barWidth = (canvas.width / bufferLength) * 2.5;
+                let x = 0;
+                for (let i = 0; i < bufferLength; i++) {
+                    const barHeight = dataArray[i] * 2;
+                    ctx.fillStyle = `rgb(${barHeight + 50}, ${barHeight + 100}, ${barHeight + 150})`;
+                    ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+                    x += barWidth + 1;
+                }
+                requestAnimationFrame(visualize);
+            }
+            audio.onplay = () => visualize();
+        }
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+        window.onclick = function (event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                    const player = modal.querySelector('audio');
+                    if (player) player.pause();
+                }
+            });
+        };
+    </script>
+</body>
+</html>
